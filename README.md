@@ -1,1 +1,1 @@
-![Test Status](https://github.com/your-username/ci_project/actions/workflows/ci.yml/badge.svg)
+![Test Status](https://github.com/plotnikovg/ContinuousDevPR2/actions/workflows/ci.yml/badge.svg)

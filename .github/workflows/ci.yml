@@ -4,15 +4,22 @@ on: [push, pull_request]
 
 jobs:
   build:
+    name: Test on Python ${{ matrix.python-version }}
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false # false - продолжить остальные тесты, даже если один упал.
+      matrix:
+        # Определяем переменную python-version и список её значений
+        python-version: ['3.8', '3.9', '3.10', '3.11']
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Set up Python
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         id: install_deps
@@ -27,12 +34,16 @@ jobs:
         id: lint
         run: |
           source venv/bin/activate
+          # Проверка версии flake8
+          echo "Using flake8 $(flake8 --version)"
           flake8 . --count --show-source --statistics
 
-      - name: Run tests
+      - name: Run tests with pytest
         id: tests
         run: |
           source venv/bin/activate
+          echo "Using python $(python --version)"
+          echo "Using pytest $(pytest --version)"
           pytest
 
       # Отправка уведомления в Telegram при провале
